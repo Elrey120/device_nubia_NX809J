@@ -1,0 +1,109 @@
+name: Build TWRP Recovery
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    
+    steps:
+    - name: Checkout device tree
+      uses: actions/checkout@v4
+
+    - name: Cleanup
+      uses: rokibhasansagar/slimhub_actions@main
+
+    - name: Set Swap Space
+      uses: pierotofy/set-swap-space@master
+      with:
+        swap-size-gb: 12
+
+    - name: Install Dependencies
+      run: |
+        sudo apt update
+        sudo apt -y install gperf gcc-multilib g++-multilib libc6-dev lib32ncurses-dev x11proto-core-dev libx11-dev tree lib32z-dev libgl1-mesa-dev libxml2-utils xsltproc bc ccache lib32readline-dev lib32z1-dev liblz4-tool libncurses5-dev libncurses-dev libsdl1.2-dev libxml2 lzop pngcrush schedtool squashfs-tools imagemagick libbz2-dev lzma ncftp qemu-user-static libstdc++-12-dev libgflags-dev python3 curl git-core gnupg flex bison build-essential zip unzip zlib1g-dev libc6-dev-i386 libncurses5 fontconfig python-is-python3
+        sudo apt clean
+
+    - name: Install OpenJDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '11'
+
+    - name: Setup repo tool
+      run: |
+        mkdir -p ~/bin
+        curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+        chmod a+x ~/bin/repo
+        sudo ln -sf ~/bin/repo /usr/bin/repo
+
+    - name: Initialize TWRP minimal manifest
+      run: |
+        mkdir -p workspace
+        cd workspace
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-12.1
+
+    - name: Repo Sync
+      run: |
+        cd workspace
+        repo sync -j$(nproc --all) --force-sync
+
+    - name: Clone device tree
+      run: |
+        cd workspace
+        git clone https://github.com/${{ github.repository }} -b main device/nubia/NX809J
+
+    - name: Verify device tree
+      run: |
+        cd workspace/device/nubia/NX809J
+        echo "=== Kernel ==="
+        file prebuilt/kernel
+        ls -lh prebuilt/kernel
+        echo "=== DTB ==="
+        ls -lh prebuilt/dtb/dtb.img
+        echo "=== Vendor binaries ==="
+        ls recovery/vendor/bin/
+        ls recovery/vendor/bin/hw/
+        echo "=== Vendor libs ==="
+        ls recovery/vendor/lib64/ | wc -l
+        echo "=== Modules ==="
+        ls recovery/vendor/modules/
+
+    - name: Building TWRP
+      run: |
+        cd workspace
+        export ALLOW_MISSING_DEPENDENCIES=true
+        export LC_ALL="C"
+        source build/envsetup.sh
+        lunch twrp_NX809J-eng
+        make recoveryimage -j$(nproc --all)
+
+    - name: Upload Recovery
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          workspace/out/target/product/NX809J/recovery.img
+        name: TWRP-NX809J-${{ github.run_id }}
+        tag_name: ${{ github.run_id }}
+        body: |
+          ## TWRP Recovery for Nubia Red Magic 11 Pro (NX809J)
+          
+          **WARNING: Unofficial build. Test before flashing!**
+          
+          ### Test (safe, temporary)
+          ```
+          fastboot boot recovery.img
+          ```
+          
+          ### Install (only after testing)
+          ```
+          fastboot flash recovery_a recovery.img
+          fastboot flash recovery_b recovery.img
+          ```
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
