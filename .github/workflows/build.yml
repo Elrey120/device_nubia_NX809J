@@ -62,8 +62,8 @@ jobs:
       run: |
         cd workspace/device/nubia/NX809J
         echo "=== Kernel ==="
-        file prebuilt/kernel
-        ls -lh prebuilt/kernel
+        file prebuilt/Image
+        ls -lh prebuilt/Image
         echo "=== DTB ==="
         ls -lh prebuilt/dtb/dtb.img
         echo "=== Vendor binaries ==="
