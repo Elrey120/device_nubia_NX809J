@@ -85,7 +85,12 @@ jobs:
           echo "Line 594 after patch:"
           sed -n '590,598p' vendor/twrp/build/tasks/kernel.mk
         fi
-
+        
+    - name: Fix missing apc-ndk dependency
+      run: |
+        cd workspace
+        mkdir -p out/target/product/NX809J/obj/SHARED_LIBRARIES/android.security.apc-ndk_platform_intermediates
+        echo "" > out/target/product/NX809J/obj/SHARED_LIBRARIES/android.security.apc-ndk_platform_intermediates/android.security.apc-ndk_platform.so.toc
     - name: Building TWRP
       run: |
         cd workspace
