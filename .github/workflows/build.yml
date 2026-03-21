@@ -89,23 +89,25 @@ jobs:
     - name: Fix missing ninja dependencies
       run: |
         cd workspace
-        for lib in \
-          android.security.apc-ndk_platform \
-          android.system.keystore2-V1-ndk_platform \
-          android.security.aorigin-ndk_platform \
-          android.security.authorization-ndk_platform \
-          android.security.maintenance-ndk_platform \
-          android.system.keystore2-V3-ndk \
-          android.security.apc-ndk \
-          android.system.keystore2-V1-ndk \
-          android.security.authorization-ndk \
-          android.security.maintenance-ndk \
-          android.system.keystore2-V2-ndk \
-          android.system.keystore2-V2-ndk_platform \
-          android.system.keystore2-V3-ndk_platform \
-        ; do
-          mkdir -p out/target/product/NX809J/obj/SHARED_LIBRARIES/${lib}_intermediates
-          touch out/target/product/NX809J/obj/SHARED_LIBRARIES/${lib}_intermediates/${lib}.so.toc
+        for dir in obj obj_arm; do
+          for lib in \
+            android.security.apc-ndk_platform \
+            android.system.keystore2-V1-ndk_platform \
+            android.security.aorigin-ndk_platform \
+            android.security.authorization-ndk_platform \
+            android.security.maintenance-ndk_platform \
+            android.system.keystore2-V3-ndk \
+            android.security.apc-ndk \
+            android.system.keystore2-V1-ndk \
+            android.security.authorization-ndk \
+            android.security.maintenance-ndk \
+            android.system.keystore2-V2-ndk \
+            android.system.keystore2-V2-ndk_platform \
+            android.system.keystore2-V3-ndk_platform \
+          ; do
+            mkdir -p out/target/product/NX809J/${dir}/SHARED_LIBRARIES/${lib}_intermediates
+            touch out/target/product/NX809J/${dir}/SHARED_LIBRARIES/${lib}_intermediates/${lib}.so.toc
+          done
         done
 
     - name: Building TWRP
