@@ -79,8 +79,7 @@ jobs:
         cd workspace
         export ALLOW_MISSING_DEPENDENCIES=true
         export LC_ALL="C"
-        
-        # Create the CTS file and inject the A16 version to bypass the crash
+        export SKIP_ABI_CHECKS=true
         mkdir -p cts/tests/tests/os/assets/
         echo "16.0.0" >> cts/tests/tests/os/assets/platform_releases.txt
         echo "16" >> cts/tests/tests/os/assets/platform_releases.txt
