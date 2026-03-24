@@ -139,17 +139,18 @@ TW_CUSTOM_VIBRATION_FILE := "/sys/devices/platform/soc/9c0000.qcom,qupv3_i2c_gen
 TARGET_RECOVERY_DEVICE_MODULES += libion
 TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libion.so
 
-# 1. Space Saving
+
+# Android 16 SEPolicy Compatibility
+BOARD_PUBLIC_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/public
+BOARD_VENDOR_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy
+SELINUX_IGNORE_NEVERALLOWS := true
+
+# Space Saving (100MB Partition Limit)
 BOARD_RAMDISK_USE_LZ4 := false
 BOARD_RAMDISK_USE_LZMA := true
 TW_THEME := portrait_mdpi
 
-# 2. SEPolicy Fixes
-BOARD_SEPOLICY_DIRS += device/nubia/NX809J/sepolicy
-BOARD_VENDOR_SEPOLICY_DIRS += device/nubia/NX809J/sepolicy
-SELINUX_IGNORE_NEVERALLOWS := true
-
-# 3. Accessibility
+# Keep languages for accessibility
 TW_EXTRA_LANGUAGES := true
 
 # Debug
