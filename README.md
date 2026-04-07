@@ -20,13 +20,13 @@ Unofficial TWRP recovery for the Nubia Red Magic 11 Pro (NX809J).
 |-----------|--------|
 | Device | Nubia Red Magic 11 Pro |
 | Codename | canoe (NX809J) |
-| SoC | Qualcomm Snapdragon 8 Elite (SM8750) |
-| SoC Platform | sun |
-| GPU | Adreno 830 |
+| SoC | Qualcomm Snapdragon 8 Elite Gen 5 (SM8850) |
+| SoC Platform | canoe |
+| GPU | Adreno 840 |
 | Architecture | arm64 (ARMv8-A) |
-| Kernel | Linux 6.12.23 (GKI, Android 16) |
+| Kernel | Linux 6.12.23 (GKI, Android 16) | # Maybe change this, I´ll check later
 | Boot header | v4 |
-| RAM | 12/16 GB |
+| RAM | 12/16/24 GB |
 | Display | AMOLED, DRM DSI (card0-DSI-1) |
 | Touch | Synaptics TCM (via zte_tpd kernel module) |
 | Partition scheme | A/B with dedicated recovery partition |
