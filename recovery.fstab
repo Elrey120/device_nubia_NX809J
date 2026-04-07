@@ -3,8 +3,10 @@
 # <mount_point>  <fstype>  <device>                                      <flags>
 
 # Dynamic Partitions (logical) - all erofs on stock
-/system          erofs     system                                         display="System";logical;
-/system_ext      erofs     system_ext                                     display="System_EXT";logical;
+/system          erofs     system                                         ro
+/system          ext4      system                                         ro,barrier=1,discard
+/system_ext      erofs     system_ext                                     ro
+/system_ext      ext4      system_ext                                     ro,barrier=1,discard
 /vendor          erofs     vendor                                         display="Vendor";logical;
 /product         erofs     product                                        display="Product";logical;
 /odm             erofs     odm                                            display="ODM";logical;
